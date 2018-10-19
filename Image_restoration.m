@@ -22,7 +22,7 @@ function varargout = Assignment_4(varargin)
 
 % Edit the above text to modify the response to help Assignment_4
 
-% Last Modified by GUIDE v2.5 17-Oct-2018 23:44:03
+% Last Modified by GUIDE v2.5 19-Oct-2018 19:01:19
 
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
@@ -99,8 +99,7 @@ function Load_Image_Callback(hObject, eventdata, handles)
 % hObject    handle to Load_Image (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
-global im im2 iml imlen im_fr im_fb im_fg M N             
-iml={};                                                     
+global im im2 im_fr im_fb im_fg M N                                                             
 [path, user_cance]=imgetfile();                            
 if user_cance
     magbox(sprintf('Error'),'Error','Error');
@@ -109,8 +108,6 @@ end
 im=imread(path);                                            
 im=im2double(im);
 im2=im;
-iml{1}=im2;
-imlen=1;
 axes(handles.axes1);
 imshow(im);
 f=fft2(rgb2gray(im));
@@ -134,7 +131,7 @@ function Full_inverse_filter_Callback(hObject, eventdata, handles)
 % hObject    handle to Full_inverse_filter (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
-global im im_fr im_fb im_fg acb M N
+global im im_fr im_fb im_fg acb M N im_o
 disp(size(im_fr));
 disp(size(acb));
 
@@ -152,7 +149,7 @@ imnew(:,:,3)=im_fg2.*50;
 axes(handles.axes1);
 imshow(imnew);
 
-MSE = sum(sum((imnew(:,:,1)-im(:,:,1)).^2))/(M*N);
+MSE = sum(sum((imnew(:,:,1)-im_o(:,:,1)).^2))/(M*N);
 PSNR = 10*log10(256*256/MSE);   
 
 set(handles.PSNR,'String',PSNR);
@@ -161,7 +158,7 @@ window = fspecial('gaussian', 11, 1.5);
 K = [0.05 0.05];
 L = 255;
 img1 = double(imnew(:,:,1));
-img2 = double(im(:,:,1));
+img2 = double(im_o(:,:,1));
 
 f = max(1,round(min(M,N)/256));
 
@@ -213,7 +210,7 @@ function Truncated_filter_Callback(hObject, eventdata, handles)
 % hObject    handle to Truncated_filter (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
-global im im_fr im_fb im_fg M N acb
+global im im_fr im_fb im_fg M N acb im_o
 c= str2double(get(handles.Radius, 'String'));
 per=(c/100)*(M/2);
 im_fr1 = im_fr./((abs(acb)<4)*(4) + acb);
@@ -243,7 +240,7 @@ imnew(:,:,3)=im_fg2.*50;
 axes(handles.axes1);
 imshow(imnew,[]); 
 
-MSE = sum(sum((imnew(:,:,1)-im(:,:,1)).^2))/(M*N);
+MSE = sum(sum((imnew(:,:,1)-im_o(:,:,1)).^2))/(M*N);
 PSNR = 10*log10(256*256/MSE);   
 
 set(handles.PSNR,'String',PSNR);
@@ -252,7 +249,7 @@ window = fspecial('gaussian', 11, 1.5);
 K = [0.05 0.05];
 L = 255;
 img1 = double(imnew(:,:,1));
-img2 = double(im(:,:,1));
+img2 = double(im_o(:,:,1));
 
 f = max(1,round(min(M,N)/256));
 
@@ -327,7 +324,7 @@ function Weiner_Callback(hObject, eventdata, handles)
 % hObject    handle to Weiner (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
-global im im_fr im_fb im_fg acb M N
+global im im_fr im_fb im_fg acb M N im_o
 k= str2double(get(handles.k_value, 'String'));
 const=(abs((abs(acb)<4)*(4) + acb).^2)./((abs((abs(acb)<4)*(4) + acb).^2)+k);
 
@@ -349,7 +346,7 @@ imnew(:,:,3)=im_fg2.*50;
 axes(handles.axes1);
 imshow(imnew,[]); 
 
-MSE = sum(sum((imnew(:,:,1)-im(:,:,1)).^2))/(M*N);
+MSE = sum(sum((imnew(:,:,1)-im_o(:,:,1)).^2))/(M*N);
 PSNR = 10*log10(256*256/MSE);   
 
 set(handles.PSNR,'String',PSNR);
@@ -357,7 +354,7 @@ window = fspecial('gaussian', 11, 1.5);
 K = [0.05 0.05];
 L = 255;
 img1 = double(imnew(:,:,1));
-img2 = double(im(:,:,1));
+img2 = double(im_o(:,:,1));
 
 f = max(1,round(min(M,N)/256));
 
@@ -433,7 +430,7 @@ function cls_filter_Callback(hObject, eventdata, handles)
 % hObject    handle to cls_filter (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
-global im im_fr im_fb im_fg acb M N
+global im im_fr im_fb im_fg acb M N im_o
 gamma= str2double(get(handles.gamma, 'String'));
 p=[0 -1 0; -1 4 -1; 0 -1 0];
 Pp=fft2(p,M,N);
@@ -453,7 +450,7 @@ imnew(:,:,3)=im_fg2.*50;
 axes(handles.axes1);
 imshow(imnew,[]); 
 
-MSE = sum(sum((imnew(:,:,1)-im(:,:,1)).^2))/(M*N);
+MSE = sum(sum((imnew(:,:,1)-im_o(:,:,1)).^2))/(M*N);
 PSNR = 10*log10(256*256/MSE);   
 
 set(handles.PSNR,'String',PSNR);
@@ -462,7 +459,7 @@ window = fspecial('gaussian', 11, 1.5);
 K = [0.05 0.05];
 L = 255;
 img1 = double(imnew(:,:,1));
-img2 = double(im(:,:,1));
+img2 = double(im_o(:,:,1));
 
 f = max(1,round(min(M,N)/256));
 
@@ -573,3 +570,21 @@ function SSIM_CreateFcn(hObject, eventdata, handles)
 if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
     set(hObject,'BackgroundColor','white');
 end
+
+
+% --- Executes on button press in Original.
+function Original_Callback(hObject, eventdata, handles)
+% hObject    handle to Original (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+global  im_o         
+                                                     
+[path, user_cance]=imgetfile();                            
+if user_cance
+    magbox(sprintf('Error'),'Error','Error');
+    return
+end
+im_o=imread(path);                                            
+im_o=im2double(im_o);
+axes(handles.axes5);
+imshow(im_o,[]); 
