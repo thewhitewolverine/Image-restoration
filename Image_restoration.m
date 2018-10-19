@@ -329,9 +329,9 @@ function Weiner_Callback(hObject, eventdata, handles)
 % handles    structure with handles and user data (see GUIDATA)
 global im im_fr im_fb im_fg acb M N
 k= str2double(get(handles.k_value, 'String'));
-const=(abs((abs(acb)<4)*(4) + acb).^2)/((abs((abs(acb)<4)*(4) + acb).^2)+k);
+const=(abs((abs(acb)<4)*(4) + acb).^2)./((abs((abs(acb)<4)*(4) + acb).^2)+k);
 
-im_fr1 = im_fr./((abs(acb)<4)*(4) + acb);
+im_fr1 = im_fr./((abs(acb)<4)*(4) + acb); 
 im_fb1 = im_fb./((abs(acb)<4)*(4) + acb);
 im_fg1 = im_fg./((abs(acb)<4)*(4) + acb);
 
